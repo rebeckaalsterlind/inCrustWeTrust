@@ -6,7 +6,7 @@ function Header({showSite}) {
 
   const handleClick = (e) => {
    
-    if(e.target.innerHTML === "Opopoppa<br>pizza dough") {
+    if(e.target.innerHTML === "In Crust We Trust") {
       setClickedLink("Recipe")
     } else {
       setClickedLink(e.target.innerHTML)
@@ -19,12 +19,10 @@ function Header({showSite}) {
 
   return (
     <nav>
-      <div onClick={handleClick} >Opopoppa
-        <br/>pizza dough
-      </div>
+      <aside onClick={handleClick} >In Crust We Trust
+      </aside>
       <ul>
         <li onClick={handleClick}>Recipe</li>
-        <li onClick={handleClick}>Style</li>
         <li onClick={handleClick}>Dough</li>
         <li onClick={handleClick}>Contact</li>
       </ul>
