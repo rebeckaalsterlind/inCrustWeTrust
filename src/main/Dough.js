@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { create, all } from 'mathjs';
+
 
 function Dough() {
+
+  const config = { }
+  const math = create(all, config)
+  const { simplify, parse, derivative, evaluate } = require('mathjs')
 
   const [showRecipe, setShowRecipe] = useState(false);
   const [type, setType] = useState("Napolitana");
@@ -14,7 +20,6 @@ function Dough() {
   const [totalWeight, setTotalWeight] = useState(ballWeight * doughballs);
 
   const [ingredients, setIngredients] = useState([
-    {ingredient: "flour", amount: ""}, 
     {ingredient: "water", amount: ""},
     {ingredient: "salt", amount: ""}, 
     {ingredient: "sugar", amount: ""}, 
@@ -22,21 +27,36 @@ function Dough() {
   ]);
 
   function recipe() {
+
+    //calc total weight of dough
     setTotalWeight(ballWeight * doughballs);
 
+    
     const newIngredients =[
-      {ingredient: "flour", amount: totalWeight}, 
-      {ingredient: "water", amount: water},
+      {size: "doughballs", amount: doughballs},
+      {size: "ballWeight", amount: ballWeight}, 
+      {ingredient: "water", amount: Number(water)},
       {ingredient: "salt", amount: salt}, 
       {ingredient: "sugar", amount: sugar}, 
       {ingredient: "oil", amount: oil}
     ];
 
+    let otherIng = 0;
+
     newIngredients.forEach(i => {
-      i.amount = ((i.amount/100) * totalWeight).toFixed(2)
+      if(i.ingredient) {
+        otherIng += i.amount;
+        i.amount = i.amount/100
+        console.log('water', i.amount);
+      }
     });
+    
+    const flour = (totalWeight * 100) / (100 + otherIng);
+
+    newIngredients.push({ingredient: "flour", amount: Math.floor(flour)})
 
     setIngredients(newIngredients);
+
   }
 
   useEffect(() => {
@@ -77,19 +97,18 @@ function Dough() {
     e.preventDefault();
     
     recipe();
+    setShowRecipe(true);
    
-  
-
   }
 
-  useEffect(() => {
-    if (ingredients[0].amount <= 0) setShowRecipe(false);
-  }, )
+  // useEffect(() => {
+  //   if (ingredients[0].amount <= 0) setShowRecipe(false);
+  // }, )
 
 
-  useEffect(() => {
-    setShowRecipe(true);
-  }, ingredients)
+  // useEffect(() => {
+  //   setShowRecipe(true);
+  // }, [ingredients])
 
   return (
     <>
@@ -101,7 +120,7 @@ function Dough() {
           <option value="New York" >New York</option>
           <option value="Deep Dish" >Deep Dish</option>
         </select>
-        <br />   <br />
+        <br /><br />
 
         <label htmlFor={doughballs}>Dough balls</label>
         <select name="doughballs" onChange={(e)=> setDoughballs(e.target.value)}>
@@ -124,19 +143,19 @@ function Dough() {
         Total dough weight: {totalWeight}g
         <br /><br />
       
-        <label for="water">Water:</label>
+        <label htmlFor="water">Water:</label>
         <input name="water" type="number" placeholder={water} min="1" max="100" step=".5" value={water} onChange={(e) => setWater(e.target.value)}/>%
         <br />
 
-        <label for="salt">Salt:</label>
+        <label htmlFor="salt">Salt:</label>
         <input name="salt" type="number" placeholder={salt} min="0" max="100" step=".5" value={salt} onChange={(e) => setSalt(e.target.value)} />%
         <br />
 
-        <label for="oil">Oil:</label>
+        <label htmlFor="oil">Oil:</label>
         <input name="oil" type="number" placeholder={oil} min="0" max="100" step=".5" value={oil} onChange={(e) => setOil(e.target.value)} />%
         <br />
 
-        <label for="sugar">Sugar:</label>
+        <label htmlFor="sugar">Sugar:</label>
         <input name="sugar" type="number" placeholder={sugar} min="0" max="100" step=".5" value={sugar} onChange={(e) => setSugar(e.target.value)}/>%
         <br />
        
@@ -146,16 +165,18 @@ function Dough() {
       
       <br />   <br />
       {showRecipe && 
+      <>
+        
         <section style={{border: '1px solid black'}}>
-          Recipe for {type} {doughballs}doughballs á {ballWeight}g 
           <ul> 
             {ingredients.map((i, index) => (
               (i.amount > 0 && 
-                <li key={index}>{i.ingredient}{i.amount}</li>
+                <li key={index}>{i.ingredient}{i.size}: {Math.floor(i.amount)}g</li>
               )
             )) }
           </ul>
         </section>
+        </>
       }
     </>
 
