@@ -113,7 +113,7 @@ function Dough() {
   // }, [ingredients])
 
   return (
-    <>
+    <article>
       <form onSubmit={handleSubmit}>
          <label htmlFor="type"> Type of pizza</label>
         <br />
@@ -131,10 +131,7 @@ function Dough() {
 
         <label htmlFor="ballWeight">Ball weight:</label>
         <input name="ballWeight" type="number" placeholder={ballWeight} min="1" max="1000" step="1" value={ballWeight} onChange={(e) => setBallWeight(e.target.value)}/>
-        <br />
-
-        <br />
-        Total dough weight: {totalWeight}g
+  
         <br /><br />
       
         <label htmlFor="water">Water:</label>
@@ -153,22 +150,20 @@ function Dough() {
         <input name="sugar" type="number" placeholder={sugar} min="0" max="100" step=".5" value={sugar} onChange={(e) => setSugar(e.target.value)}/>%
         <br />
        
-        <button>Calculate</button>
+        <button>Recipe</button>
       </form>
-
-      
-      <br />   <br />
-      {showRecipe && 
-        <section>
+      <section>
+        {showRecipe &&
           <ul> 
+             Total dough weight: {totalWeight}g
             {ingredients.map((i) => (
               i.amount > 0 && 
-                <li key={i.id}>{i.name}: {Math.round(i.amount*10)/10}g</li>
+                <li key={i.id}>{i.name.charAt(0).toUpperCase() + i.name.slice(1)}: {Math.round(i.amount*10)/10}g</li>
             ))}
           </ul>
-        </section>
-      }
-    </>
+        }
+      </section>
+    </article>
 
   )
 }
