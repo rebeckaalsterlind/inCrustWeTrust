@@ -10,17 +10,16 @@ function Calculate({getWeight, getRecipe, getTotal}) {
   ];
 
   const initialRecipe =  [
-    {name: "flour", amount: Number(250)},
     {name: "water", amount: Number(60)},
     {name: "salt", amount: 60}, 
     {name: "sugar", amount: 2.5}, 
     {name: "oil", amount: 60}
   ];
-  
-  const [type, setType] = useState("napolitana");
+
+  const [type, setType] = useState("Napolitana");
   const [weight, setWeight] = useState(initialWeight);
   const [ingredients, setIngredients] = useState(initialRecipe);
-  const [totalWeight, setTotalWeight] = useState(initialWeight[0].amount * initialWeight[1].amount);
+  const [totalWeight, setTotalWeight] = useState(250);
   
   //update ingredients with new object
   const updateIngredients = (name, amount) => {
@@ -57,47 +56,38 @@ function Calculate({getWeight, getRecipe, getTotal}) {
   }, [ingredients]);
 
   useEffect(() => {
-    
-   recipe();
+    recipe();
   }, [totalWeight]);
 
 
   function recipe() {
 
-  //   //setting new recipe
+    //setting new recipe
     const newIngredients = [
-      {name: "flour", amount: ingredients[0].amount},
-      {name: "water", amount: ingredients[1].amount},
-      {name: "salt", amount: ingredients[2].amount}, 
-      {name: "sugar", amount: ingredients[3].amount}, 
-      {name: "oil", amount: ingredients[4].amount},
+      {name: "water", amount: ingredients[0].amount},
+      {name: "salt", amount: ingredients[1].amount}, 
+      {name: "sugar", amount: ingredients[2].amount}, 
+      {name: "oil", amount: ingredients[3].amount},
     ];
-console.log('newInte', newIngredients);
+
     //sum all ingredients for total % apart from flour
     let remaining = 0;
 
     newIngredients.forEach(i => {
-      if(i.name !== "flour") {
-        remaining += Number(i.amount);
-        i.amount = i.amount/100; 
-      }
- 
+      remaining += Number(i.amount);
+      i.amount = i.amount/100; 
     });
 
     //calc amount on flour
     let flour = (totalWeight * 100) / (100 + remaining);
 
     //calc amount of each ingredient based on flour
-    newIngredients.forEach(i => {
-      if(i.name !== "flour"){
-        i.amount = i.amount * flour;
-      }
-    });
+    newIngredients.forEach(i =>  i.amount = i.amount * flour);
     
-    //update flour in arr
-    const index = newIngredients.findIndex((i) => i.name === "flour");
-    newIngredients[index] = {name: "flour", amount: Number(flour)};
-
+    // //update flour in arr
+    // const index = newIngredients.findIndex((i) => i.name === "flour");
+    // newIngredients[index] = {name: "flour", amount: Number(flour)};
+    newIngredients.push({name: "flour", amount: Number(flour)})
    
     //set new ingredients state
     getRecipe(newIngredients);
@@ -105,51 +95,61 @@ console.log('newInte', newIngredients);
     getTotal(totalWeight);
   };
 
-  // //presets based on style
-  // useEffect(() => {
-    
-  //   switch(type) {
-  //     case "Napolitana":
-  //       setBallWeight(250);
-  //       setWater(63);
-  //       setSugar(1);
-  //       setOil(0);
-  //       setSalt(2.5);
-  //       break;
-  //     case "New York":
-  //       setBallWeight(220);
-  //       setWater(62);
-  //       setSugar(1);
-  //       setOil(1);
-  //       setSalt(2.5);
-  //       break;
-  //     case "Deep Dish":
-  //       setBallWeight(600);
-  //       setWater(60);
-  //       setSugar(0);
-  //       setOil(2);
-  //       setSalt(2.5);
-  //     break;
-  //     default:
-  //   } 
-  // }, [type])
+  //presets based on style
+  useEffect(() => {
 
-  // useEffect(() => {
-  //   //if old state is not the same - run recipe()
-  //   calculate(ingredients);
-  // }, )
+    let doughballs;
+    let ballWeight;
+    let water;
+    let salt;
+    let sugar;
+    let oil;
 
-  // useEffect(() => {
-  //   calculate(ingredients);
-  // }, ingredients)
+    switch(type) {
+      case "Napolitana":
+        doughballs = 1;
+        ballWeight = 250;
+        water = 63;
+        salt = 2.5;
+        sugar = 1;
+        oil = 0;
+        break;
+      case "New York":
+        doughballs = 1;
+        ballWeight = 220;
+        water = 62;
+        salt = 2.5;
+        sugar = 1;
+        oil = 1;
+        break;
+      case "Deep Dish":
+        doughballs = 1;
+        ballWeight = 600;
+        water = 60;
+        salt = 2.5;
+        sugar = 0;
+        oil = 2;
+        break;
+      default:
+    } 
+
+    const newIngredients = [
+      {name: "water", amount: water},
+      {name: "salt", amount: salt}, 
+      {name: "sugar", amount: sugar}, 
+      {name: "oil", amount: oil},
+    ];
 
 
-  // function handleSubmit (e) {
-  //   e.preventDefault();
-  //  recipe();
-  //  console.log('calculta', calculate);
-  //   calculate(ingredients);
-  // }
+    const newWeight= [
+      {name: "doughballs", amount: doughballs},
+      {name: "ballWeight", amount: ballWeight}
+    ];
+    setIngredients(newIngredients);
+    setWeight(newWeight);
+
+  }, [type])
+
 
 
   return (
@@ -158,7 +158,7 @@ console.log('newInte', newIngredients);
       <form>
         <label htmlFor="type"> Type of pizza</label>
         <br />
-        <select name="type" >
+        <select name="type" onChange={(e) => setType(e.target.value)} >
           <option value="Napolitana" >Napolitana</option>
           <option value="New York" >New York</option>
           <option value="Deep Dish" >Deep Dish</option>
@@ -191,7 +191,7 @@ console.log('newInte', newIngredients);
           name="water" 
           type="number" 
           min="0" max="100" step=".5" 
-          value={ingredients[1].amount} 
+          value={ingredients[0].amount} 
           onChange={(e) => updateIngredients(e.target.name, e.target.value)}
         />%
         <br />
@@ -201,17 +201,29 @@ console.log('newInte', newIngredients);
           name="salt" 
           type="number" 
           min="0" max="100" step=".5" 
-          value={ingredients[2].amount} 
+          value={ingredients[1].amount} 
           onChange={(e) => updateIngredients(e.target.name, e.target.value)} 
         />%
         <br />
 
         <label htmlFor="sugar">Sugar:</label>
-        <input name="sugar" type="number" min="0" max="100" step=".5" value={ingredients[3].amount} onChange={(e) => updateIngredients(e.target.name, e.target.value)}/>%
+        <input 
+          name="sugar" 
+          type="number" 
+          min="0" max="100" step=".5" 
+          value={ingredients[2].amount} 
+          onChange={(e) => updateIngredients(e.target.name, e.target.value)}
+        />%
         <br />
 
         <label htmlFor="oil">Oil:</label>
-        <input name="oil" type="number" min="0" max="100" step=".5" value={ingredients[4].amount} onChange={(e) => updateIngredients(e.target.name, e.target.value)} />%
+        <input 
+          name="oil" 
+          type="number" 
+          min="0" max="100" step=".5" 
+          value={ingredients[3].amount} 
+          onChange={(e) => updateIngredients(e.target.name, e.target.value)} 
+        />%
         <br />
 
       </form>
