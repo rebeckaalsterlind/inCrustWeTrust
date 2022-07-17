@@ -1,5 +1,8 @@
 main {
   background-color: #F5C2AC;
-  height: 100vh;
+  position: absolute;
+  bottom: 50px;
+  top: 100px;
+  height: 100%;
   width: 100%;
 }

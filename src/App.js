@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Header from './header/Header.js';
 import Main from './main/Main.js';
+import Footer from './footer/Footer.js'
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <>
       <Header showSite={clickedLink => setShowSite(clickedLink)}/>
       <Main showSite={setSite}/>
+      <Footer />
     </>
   );
 }
