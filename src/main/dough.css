@@ -1,17 +1,23 @@
 article {
   display: flex;
-  justify-content: space-evenly;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: flex-start;
   border: 1px solid black;
-  padding: 2em;
+  width: 100%;
+  height: 100%;
 }
 
-section {
-  border: 1px solid black; 
+
+.show-recipe {
+  background-color: #212639;
+  color: #F5C2AC;
 }
 
 section > ul {
   flex-direction: column;
   list-style: none;
+  padding: 5em;
 }
 
 li {

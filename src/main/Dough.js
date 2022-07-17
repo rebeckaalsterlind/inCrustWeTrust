@@ -55,15 +55,6 @@ function Dough() {
 
   }
 
-  // useEffect(() => {
-  //   recipe()
-  // }, [ballWeight])
-  
-  
-  // useEffect(() => {
-  //   recipe()
-  // }, [doughballs])
-
 
   useEffect(() => {
     
@@ -97,65 +88,58 @@ function Dough() {
 
   function handleSubmit (e) {
     e.preventDefault();
-    
     recipe();
     setShowRecipe(true);
-
   }
 
-  // useEffect(() => {
-  //   if (ingredients[0].amount <= 0) setShowRecipe(false);
-  // }, )
-
-
-  // useEffect(() => {
-  //   setShowRecipe(true);
-  // }, [ingredients])
 
   return (
     <article>
-      <form onSubmit={handleSubmit}>
-         <label htmlFor="type"> Type of pizza</label>
-        <br />
-        <select name="type" onChange={(e) => setType(e.target.value)}>
-          <option value="Napolitana" >Napolitana</option>
-          <option value="New York" >New York</option>
-          <option value="Deep Dish" >Deep Dish</option>
-        </select>
-        <br /><br />
+      <section className="set-recipe">
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="type"> Type of pizza</label>
+          <br />
+          <select name="type" onChange={(e) => setType(e.target.value)}>
+            <option value="Napolitana" >Napolitana</option>
+            <option value="New York" >New York</option>
+            <option value="Deep Dish" >Deep Dish</option>
+          </select>
+          <br /><br />
 
-        <label htmlFor="doughballs">Doughballs:</label>
-        <input name="doughballs" type="number" id={1} placeholder={doughballs} min="1" max="1000" step="1" value={doughballs} onChange={(e) => setDoughballs(e.target.value)}/>
-        <br />
+          <label htmlFor="doughballs">Doughballs:</label>
+          <input name="doughballs" type="number" id={1} placeholder={doughballs} min="1" max="1000" step="1" value={doughballs} onChange={(e) => setDoughballs(e.target.value)}/>
+          <br />
 
 
-        <label htmlFor="ballWeight">Ball weight:</label>
-        <input name="ballWeight" type="number" placeholder={ballWeight} min="1" max="1000" step="1" value={ballWeight} onChange={(e) => setBallWeight(e.target.value)}/>
-  
-        <br /><br />
-      
-        <label htmlFor="water">Water:</label>
-        <input name="water" type="number" placeholder={water} min="0" max="100" step=".5" value={water} onChange={(e) => setWater(e.target.value)}/>%
-        <br />
+          <label htmlFor="ballWeight">Ball weight:</label>
+          <input name="ballWeight" type="number" placeholder={ballWeight} min="1" max="1000" step="1" value={ballWeight} onChange={(e) => setBallWeight(e.target.value)}/>
+    
+          <br /><br />
+        
+          <label htmlFor="water">Water:</label>
+          <input name="water" type="number" placeholder={water} min="0" max="100" step=".5" value={water} onChange={(e) => setWater(e.target.value)}/>%
+          <br />
 
-        <label htmlFor="salt">Salt:</label>
-        <input name="salt" type="number" placeholder={salt} min="0" max="100" step=".5" value={salt} onChange={(e) => setSalt(e.target.value)} />%
-        <br />
+          <label htmlFor="salt">Salt:</label>
+          <input name="salt" type="number" placeholder={salt} min="0" max="100" step=".5" value={salt} onChange={(e) => setSalt(e.target.value)} />%
+          <br />
 
-        <label htmlFor="oil">Oil:</label>
-        <input name="oil" type="number" placeholder={oil} min="0" max="100" step=".5" value={oil} onChange={(e) => setOil(e.target.value)} />%
-        <br />
+          <label htmlFor="oil">Oil:</label>
+          <input name="oil" type="number" placeholder={oil} min="0" max="100" step=".5" value={oil} onChange={(e) => setOil(e.target.value)} />%
+          <br />
 
-        <label htmlFor="sugar">Sugar:</label>
-        <input name="sugar" type="number" placeholder={sugar} min="0" max="100" step=".5" value={sugar} onChange={(e) => setSugar(e.target.value)}/>%
-        <br />
-       
-        <button>Recipe</button>
-      </form>
-      <section>
+          <label htmlFor="sugar">Sugar:</label>
+          <input name="sugar" type="number" placeholder={sugar} min="0" max="100" step=".5" value={sugar} onChange={(e) => setSugar(e.target.value)}/>%
+          <br />
+        
+          <button>Recipe</button>
+        </form>
+      </section>
+
+      <section className="show-recipe">  
         {showRecipe &&
-          <ul> 
-             Total dough weight: {totalWeight}g
+        <ul> 
+        <li>Total dough weight: {totalWeight}</li>
             {ingredients.map((i) => (
               i.amount > 0 && 
                 <li key={i.id}>{i.name.charAt(0).toUpperCase() + i.name.slice(1)}: {Math.round(i.amount*10)/10}g</li>

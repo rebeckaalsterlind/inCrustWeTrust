@@ -1,19 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './main.css';
-import Home from './Home';
-import Contact from './Contact';
+import Calculate from './Calculate';
 import Recipe from './Recipe';
-import Dough from './Dough';
 
-
-function Main({showSite}) {
-
+function Main() {
+  
+  const [weight, setWeight] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [total, setTotal] = useState([]);
+  useEffect(() => {
+ console.log('we', weight);
+  }, [weight])
   return (
     <main>
-       {showSite === "home" && <Home />} 
-      {showSite === "Dough" && <Dough />} 
-      {showSite === "Recipe" && <Recipe />}
-      {showSite === "Contact" && <Contact />} 
+      <Calculate 
+        getWeight={newWeight => setWeight(newWeight)}
+        getRecipe={newRecipe => setIngredients(newRecipe)} 
+        getTotal={newTotal => setTotal(newTotal)}
+      />
+      <Recipe 
+        weight={weight}
+        ingredients={ingredients}
+        total={total}
+      />
     </main>
   )
 }
