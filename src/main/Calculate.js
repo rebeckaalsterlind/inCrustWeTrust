@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import {calcRecipe} from '../functions/calcRecipe';
 import './calculate.css';
 
 
 function Calculate({getWeight, getRecipe, getTotal}) {
   
+  const renderIngredients = ["water", "salt", "sugar", "oil"];
+
   const initialWeight =  [
     {name: "doughballs", amount: 1},
     {name: "ballWeight", amount: 250}
   ];
 
   const initialRecipe =  [
-    {name: "water", amount: Number(60)},
-    {name: "salt", amount: 60}, 
-    {name: "sugar", amount: 2.5}, 
-    {name: "oil", amount: 60}
+    {name: "water", amount: 63},
+    {name: "salt", amount: 62.5}, 
+    {name: "sugar", amount: 0}, 
+    {name: "oil", amount: 0}
   ];
 
   const [type, setType] = useState("Napolitana");
   const [weight, setWeight] = useState(initialWeight);
   const [ingredients, setIngredients] = useState(initialRecipe);
-  const [totalWeight, setTotalWeight] = useState(250);
+  const [totalWeight, setTotalWeight] = useState(initialWeight[0].amount * initialWeight[1].amount);
   
   //update ingredients with new object
   const updateIngredients = (name, amount) => {
@@ -43,57 +46,35 @@ function Calculate({getWeight, getRecipe, getTotal}) {
         return obj;
       }),
     );
-
   };
 
+  //calc total weight of dough
   useEffect(() => {
-    //calc total weight of dough
     setTotalWeight(weight[0].amount * weight[1].amount)
   }, [weight]);
 
   useEffect(() => {
-     recipe();
+    //get calc recipe from exported function (ingredients)
+    const callback = calcRecipe(ingredients, totalWeight);
+    
+    //send state back to Main
+    getRecipe(callback);
+    getWeight(weight);
+    getTotal(totalWeight);
+
   }, [ingredients]);
 
   useEffect(() => {
-    recipe();
-  }, [totalWeight]);
-
-
-  function recipe() {
-
-    //setting new recipe
-    const newIngredients = [
-      {name: "water", amount: ingredients[0].amount},
-      {name: "salt", amount: ingredients[1].amount}, 
-      {name: "sugar", amount: ingredients[2].amount}, 
-      {name: "oil", amount: ingredients[3].amount},
-    ];
-
-    //sum all ingredients for total % apart from flour
-    let remaining = 0;
-
-    newIngredients.forEach(i => {
-      remaining += Number(i.amount);
-      i.amount = i.amount/100; 
-    });
-
-    //calc amount on flour
-    let flour = (totalWeight * 100) / (100 + remaining);
-
-    //calc amount of each ingredient based on flour
-    newIngredients.forEach(i =>  i.amount = i.amount * flour);
+    //get calc recipe from exported function (ingredients)
+    const callback = calcRecipe(ingredients, totalWeight);
     
-    // //update flour in arr
-    // const index = newIngredients.findIndex((i) => i.name === "flour");
-    // newIngredients[index] = {name: "flour", amount: Number(flour)};
-    newIngredients.push({name: "flour", amount: Number(flour)})
-   
-    //set new ingredients state
-    getRecipe(newIngredients);
+    //send state back to Main
+    getRecipe(callback);
     getWeight(weight);
     getTotal(totalWeight);
-  };
+    
+  }, [totalWeight]);
+
 
   //presets based on style
   useEffect(() => {
@@ -111,7 +92,7 @@ function Calculate({getWeight, getRecipe, getTotal}) {
         ballWeight = 250;
         water = 63;
         salt = 2.5;
-        sugar = 1;
+        sugar = 0;
         oil = 0;
         break;
       case "New York":
@@ -133,6 +114,11 @@ function Calculate({getWeight, getRecipe, getTotal}) {
       default:
     } 
 
+    const newWeight= [
+      {name: "doughballs", amount: doughballs},
+      {name: "ballWeight", amount: ballWeight}
+    ];
+    
     const newIngredients = [
       {name: "water", amount: water},
       {name: "salt", amount: salt}, 
@@ -140,13 +126,8 @@ function Calculate({getWeight, getRecipe, getTotal}) {
       {name: "oil", amount: oil},
     ];
 
-
-    const newWeight= [
-      {name: "doughballs", amount: doughballs},
-      {name: "ballWeight", amount: ballWeight}
-    ];
-    setIngredients(newIngredients);
     setWeight(newWeight);
+    setIngredients(newIngredients);
 
   }, [type])
 
@@ -154,18 +135,18 @@ function Calculate({getWeight, getRecipe, getTotal}) {
 
   return (
 
-    <section className="set-recipe">
+    <section className="calculate">
+      <h3>Choose your settings</h3>
       <form>
-        <label htmlFor="type"> Type of pizza</label>
-        <br />
+        <label htmlFor="type">Type of pizza: </label>
         <select name="type" onChange={(e) => setType(e.target.value)} >
-          <option value="Napolitana" >Napolitana</option>
-          <option value="New York" >New York</option>
-          <option value="Deep Dish" >Deep Dish</option>
+          <option value="Napolitana">Napolitana</option>
+          <option value="New York">New York</option>
+          <option value="Deep Dish">Deep Dish</option>
         </select>
         <br /><br />
 
-        <label htmlFor="doughballs">Doughballs:</label>
+        <label htmlFor="doughballs">Doughballs: </label>
         <input 
           name="doughballs" 
           type="number" 
@@ -175,55 +156,81 @@ function Calculate({getWeight, getRecipe, getTotal}) {
         />
         <br />
 
-        <label htmlFor="ballWeight">Ball weight:</label>
+        <label htmlFor="ballWeight">Ball weight: </label>
         <input 
           name="ballWeight" 
           type="number" min="1" max="1000" step="1" 
           value={weight[1].amount} 
           onChange={(e) => updateWeight(e.target.name, e.target.value)}
-        />
+        /> g
   
         <br /><br />
 
         {/* later issue: map trough this instead */}
-        <label htmlFor="water">Water:</label>
-        <input 
-          name="water" 
-          type="number" 
-          min="0" max="100" step=".5" 
-          value={ingredients[0].amount} 
-          onChange={(e) => updateIngredients(e.target.name, e.target.value)}
-        />%
+        {renderIngredients.map((i, index) => {
+          return (
+          <>
+            <label htmlFor={i}>{i}:</label>
+            <input 
+              name={i} 
+              type="number" 
+              min="0" max="100" step=".5" 
+              value={ingredients[index].amount} 
+              onChange={(e) => updateIngredients(e.target.name, e.target.value)}
+            />%
+            <br />
+          </>
+          )}
+        )}
+
+        <br />
         <br />
 
-        <label htmlFor="salt">Salt:</label>
-        <input 
-          name="salt" 
-          type="number" 
-          min="0" max="100" step=".5" 
-          value={ingredients[1].amount} 
-          onChange={(e) => updateIngredients(e.target.name, e.target.value)} 
-        />%
+        <label htmlFor="yeast">Yeast: </label>
+        <select name="yeast" >
+          <option value="idy">IDY</option>
+          <option value="cy">CY</option>
+          <option value="ady">ADY</option>
+          <option value="fsd">FSD</option>
+          <option value="lsd">LSD</option>
+        </select>
+        <br />
         <br />
 
-        <label htmlFor="sugar">Sugar:</label>
+        <label htmlFor="cold temp">Cold temperature leavening: </label>
         <input 
-          name="sugar" 
+          name="cold leavening" 
           type="number" 
-          min="0" max="100" step=".5" 
-          value={ingredients[2].amount} 
-          onChange={(e) => updateIngredients(e.target.name, e.target.value)}
-        />%
+          min="0" max="100" step="1" 
+          value={4}
+        /> h
         <br />
 
-        <label htmlFor="oil">Oil:</label>
+        <label htmlFor="cold temp">Cold temperature: </label>
         <input 
-          name="oil" 
+          name="cold temp" 
           type="number" 
           min="0" max="100" step=".5" 
-          value={ingredients[3].amount} 
-          onChange={(e) => updateIngredients(e.target.name, e.target.value)} 
-        />%
+        /> C°
+        <br />
+        <br />
+
+        <label htmlFor="room temp">Room temperature leavening: </label>
+        <input 
+          name="room leavening" 
+          type="number" 
+          min="0" max="100" step="1" 
+          value={21}
+        /> h
+        <br />
+             
+        <label htmlFor="room temp">Room temperature: </label>
+        <input 
+          name="room temp" 
+          type="number" 
+          min="0" max="100" step=".5" 
+        /> C°
+        <br />
         <br />
 
       </form>
