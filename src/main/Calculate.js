@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {calcRecipe} from '../functions/calcRecipe';
+import calcRecipe from '../functions/calcRecipe';
+import changeType from '../functions/changeType';
 import './calculate.css';
 
 
@@ -62,72 +63,17 @@ function Calculate({getWeight, getRecipe, getTotal}) {
     getWeight(weight);
     getTotal(totalWeight);
 
-  }, [ingredients]);
-
-  useEffect(() => {
-    //get calc recipe from exported function (ingredients)
-    const callback = calcRecipe(ingredients, totalWeight);
-    
-    //send state back to Main
-    getRecipe(callback);
-    getWeight(weight);
-    getTotal(totalWeight);
-    
-  }, [totalWeight]);
+  }, [ingredients, totalWeight]);
 
 
   //presets based on style
   useEffect(() => {
 
-    let doughballs;
-    let ballWeight;
-    let water;
-    let salt;
-    let sugar;
-    let oil;
+    //get new settings from exported func
+    const getType = changeType(type);
 
-    switch(type) {
-      case "Napolitana":
-        doughballs = 1;
-        ballWeight = 250;
-        water = 63;
-        salt = 2.5;
-        sugar = 0;
-        oil = 0;
-        break;
-      case "New York":
-        doughballs = 1;
-        ballWeight = 220;
-        water = 62;
-        salt = 2.5;
-        sugar = 1;
-        oil = 1;
-        break;
-      case "Deep Dish":
-        doughballs = 1;
-        ballWeight = 600;
-        water = 60;
-        salt = 2.5;
-        sugar = 0;
-        oil = 2;
-        break;
-      default:
-    } 
-
-    const newWeight= [
-      {name: "doughballs", amount: doughballs},
-      {name: "ballWeight", amount: ballWeight}
-    ];
-    
-    const newIngredients = [
-      {name: "water", amount: water},
-      {name: "salt", amount: salt}, 
-      {name: "sugar", amount: sugar}, 
-      {name: "oil", amount: oil},
-    ];
-
-    setWeight(newWeight);
-    setIngredients(newIngredients);
+    setWeight(getType.weight);
+    setIngredients(getType.ingredients);
 
   }, [type])
 
