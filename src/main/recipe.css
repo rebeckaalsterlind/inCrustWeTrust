@@ -1,0 +1,10 @@
+.recipe {
+  background-color: #212639;
+  color: #F5C2AC;
+  width: 50%; 
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 2em;
+}
