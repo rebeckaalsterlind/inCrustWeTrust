@@ -1,8 +1,8 @@
 
 import './recipe.css';
 
-function Recipe({weight, ingredients, total}) {
-  
+function Recipe({weight, ingredients, total, yeast}) {
+
   return (
     <section className="recipe">
       <h3>Recipe</h3>
@@ -23,7 +23,13 @@ function Recipe({weight, ingredients, total}) {
               : Math.round(i.amount*10)/10}g
             </li>
         ))}
+        <li>Yeast: {Math.round(yeast*100)/100}g</li>
       </ul>
+      <br /><br />
+
+        
+
+
     </section>
 
   )
