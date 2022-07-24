@@ -42,12 +42,12 @@ export default function changeType(type) {
         {name: "ballWeight", amount: ballWeight}
       ],
     ingredients:
-    [
-      {name: "water", amount: water},
-      {name: "salt", amount: salt}, 
-      {name: "sugar", amount: sugar}, 
-      {name: "oil", amount: oil}
-    ]
+      [
+        {name: "water", amount: water},
+        {name: "salt", amount: salt}, 
+        {name: "sugar", amount: sugar}, 
+        {name: "oil", amount: oil}
+      ]
   };
   
 
