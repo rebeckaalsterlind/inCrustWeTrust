@@ -7,13 +7,12 @@ import Footer from './footer/Footer.js'
 
 function App() {
 
-
-  const [setSite, setShowSite] = useState("Home");
+  const [page, setPage] = useState("calculator");
 
   return (
     <>
-      <Header showSite={clickedLink => setShowSite(clickedLink)}/>
-      <Main showSite={setSite}/>
+      <Header getPage={clickedLink => setPage(clickedLink)}/>
+      <Main page={page}/>
       <Footer />
     </>
   );
