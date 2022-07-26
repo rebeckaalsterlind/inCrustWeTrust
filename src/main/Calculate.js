@@ -160,7 +160,7 @@ function Calculate({getWeight, getRecipe, getTotal, getYeast}) {
         {renderIngredients.map((i, index) => {
           return (
           <>
-            <label htmlFor={i}>{i}:</label>
+            <label htmlFor={i}>{i.charAt(0).toUpperCase() + i.slice(1)}: </label>
             <input 
               name={i} 
               type="number" 
